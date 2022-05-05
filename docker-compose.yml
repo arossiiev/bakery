@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+###> doctrine/doctrine-bundle ###
+  db:
+    image: postgres:${POSTGRES_VERSION:-13}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
+      POSTGRES_USER: ${POSTGRES_USER:-symfony}
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+  nginx:
+    build:
+      context: ./nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/client.conf:/etc/nginx/conf.d/client.conf
+      - ./:/var/www/api.bakery
+      - ./client/build:/var/www/bakery
+      - ./logs/nginx/:/var/log/nginx:cached
+    depends_on:
+      - fpm
+    ports:
+      - "80:80"
+    links:
+      - fpm
+
+  fpm:
+    build:
+      context: '.'
+      dockerfile: 'fpm/Dockerfile'
+    depends_on:
+      - database
+    environment:
+      - APP_ENV=${APP_ENV}
+      - APP_SECRET=${APP_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - ./:/var/www/api.bakery:cached
+    ports:
+      - '9002:9000'
+
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  db-data:
+###< doctrine/doctrine-bundle ###
