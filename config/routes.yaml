@@ -1,3 +1,13 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+get_product_types:
+  path: /product_types
+  controller: App\Controller\ProductController::getProductTypes
+  methods: GET
+
+get_products:
+    path: /products
+    controller: App\Controller\ProductController::getProducts
+    methods: GET
+get_product:
+  path: /products/{id}
+  controller: App\Controller\ProductController::getProduct
+  methods: GET
