@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ProductRepository;
 use App\Repository\ProductTypeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -18,13 +19,15 @@ class ProductController extends AbstractController
     public function getProducts(
         Request $request,
         ProductRepository $productRepository,
-        NormalizerInterface $normalizer
-
+        NormalizerInterface $normalizer,
+        Packages $package
     ): JsonResponse
     {
         if($request->query->has("type")){
             $type = $request->query->get("type");
-            $products = $productRepository->findBy(["productType" => ["id" => $type]]);
+
+
+            $products = $productRepository->findByType($type);
 
         }
         else{
@@ -36,7 +39,7 @@ class ProductController extends AbstractController
 
         foreach ($products as $product){
             $normalizedProduct = $normalizer->normalize($product, "json", [AbstractNormalizer::IGNORED_ATTRIBUTES => ["products", '__initializer__', '__cloner__', '__isInitialized__']]);
-            $normalizedProduct["ImageUrl"] = "http://".$request->getHost().':'.$request->getPort()."/".$normalizedProduct["imageUrl"];
+            $normalizedProduct["imageUrl"] = $package->getUrl("/".$normalizedProduct["imageUrl"]);
             $normalizedProducts[] = $normalizedProduct;
 
         }
@@ -49,12 +52,13 @@ class ProductController extends AbstractController
         Request $request,
         int $id,
         ProductRepository $productRepository,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer,
+        Packages $package
     ): JsonResponse
     {
         $product = $productRepository->find($id);
         $normalizedProduct = $normalizer->normalize($product, "json", [AbstractNormalizer::IGNORED_ATTRIBUTES => ["products", '__initializer__', '__cloner__', '__isInitialized__']]);
-        $normalizedProduct["imageUrl"] = "http://".$request->getHost().':'.$request->getPort()."/".$normalizedProduct["imageUrl"];
+        $normalizedProduct["imageUrl"] = $package->getUrl("/".$normalizedProduct["imageUrl"]);
         return new JsonResponse($normalizedProduct);
     }
 

@@ -52,11 +52,13 @@ class ProductRepository extends ServiceEntityRepository
       */
     public function findByType($value)
     {
+
+
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
+            ->leftJoin("p.productType", "jp")
+            ->andWhere('jp.slug = :val')
             ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            ->orderBy('jp.id', 'ASC')
             ->getQuery()
             ->getResult()
         ;

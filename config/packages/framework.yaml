@@ -12,6 +12,10 @@ framework:
         cookie_samesite: lax
         storage_factory_id: session.storage.factory.native
 
+    assets:
+        base_path: ~
+        base_urls: [ 'http://api.bakery']
+
     #esi: true
     #fragments: true
     php_errors:

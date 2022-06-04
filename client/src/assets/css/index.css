@@ -1,0 +1,25 @@
+.no-text-decoration,
+.no-text-decoration a,
+.no-text-decoration a:link,
+.no-text-decoration a:visited,
+.no-text-decoration a:hover,
+.no-text-decoration a:active{
+    text-decoration: none !important;
+    color: black;
+    margin-bottom: 0;
+}
+
+
+.toggler{
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+
+}
+
+
+.bg-yellow{
+    background: yellow;
+}
+
+.bg-grey{
+    background: rgb(45, 46, 48);
+}
