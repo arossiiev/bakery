@@ -13,6 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Order
 {
+    const ORDER_IS_PENDING = 0;
+    const ORDER_IN_DELIVERY = 1;
+    const ORDER_IS_READY = 2;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -39,6 +43,11 @@ class Order
      * @ORM\OneToMany(targetEntity=OrderLine::class, mappedBy="clientOrder")
      */
     private $orderLines;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $status;
 
     public function __construct()
     {
@@ -112,6 +121,18 @@ class Order
                 $orderLine->setClientOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

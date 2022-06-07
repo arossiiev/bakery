@@ -2,7 +2,7 @@ import Layout from "../layout/Layout";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {getProduct, getProducts} from "../../actions";
+import {addToCart, getProduct, getProducts} from "../../actions";
 
 import {selectCurrentProduct, selectProducts} from "../../selectors";
 import Loading from "../layout/Loading";
@@ -29,7 +29,9 @@ function ProductPage(){
         return <Loading/>;
     }
 
-    console.log(product);
+    const handleAddToCart = () => {
+        dispatch(addToCart(id))
+    }
     return (
         <Layout>
             <div className="row row-cols-md-1 justify-content-center my-3">
@@ -52,7 +54,7 @@ function ProductPage(){
 
                             <div className="container d-flex justify-content-between">
                                 <h4>Ціна: {product.price / 100} грн.</h4>
-                                <button type="button" className="btn btn-outline-primary">Додати у кошик</button>
+                                <button onClick={handleAddToCart} type="button" className="btn btn-outline-primary">Додати у кошик</button>
                             </div>
 
                         </div>

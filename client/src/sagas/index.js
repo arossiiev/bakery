@@ -1,6 +1,22 @@
 import { all, put, call, takeEvery } from 'redux-saga/effects';
-import {GET_PRODUCT, GET_PRODUCTS, setProduct, setProducts} from "../actions";
-import {fetchProduct, fetchProducts} from "../services";
+import {
+    ADD_TO_CART, addToast, CHECKOUT,
+    GET_CART,
+    GET_PRODUCT,
+    GET_PRODUCTS,
+    REMOVE_FROM_CART,
+    setCart,
+    setProduct,
+    setProducts
+} from "../actions";
+import {
+    addToCartProduct,
+    checkoutService,
+    fetchCart,
+    fetchProduct,
+    fetchProducts,
+    removeFromCartProduct
+} from "../services";
 
 
 
@@ -21,6 +37,57 @@ function* getProduct(action){
 }
 
 
+function* addToCartSaga(action){
+    try{
+        const {data} = yield call(addToCartProduct, action.payload);
+
+        yield put(setCart(data));
+    }catch(e){
+        console.log(e)
+
+    }
+
+}
+
+
+function* removeFromCartSaga(action){
+    try{
+        const {data} = yield call(removeFromCartProduct, action.payload);
+
+
+        yield put(setCart(data));
+    }catch(e){}
+
+}
+
+function* getCartSaga(action){
+    try{
+        const {data} = yield call(fetchCart);
+        yield put(setCart(data));
+    }catch(e){}
+
+}
+
+function* checkoutSaga(action){
+    try{
+        const {data} = yield call(checkoutService,
+            action.payload.first_name,
+            action.payload.second_name,
+            action.payload.phone,
+            action.payload.mail);
+
+
+        yield put(addToast("success", "Замовлення оформлено!"));
+
+
+    }catch(e){
+
+        yield put(addToast("error", JSON.parse(e.request.response).message));
+    }
+}
+
+
+
 function* watchGetProducts(){
     yield takeEvery(GET_PRODUCTS, getProducts)
 
@@ -31,10 +98,36 @@ function* watchGetProduct(){
 
 }
 
+
+function* watchGetCart(){
+    yield takeEvery(GET_CART, getCartSaga)
+
+}
+
+
+function* watchAddToCartProduct(){
+    yield takeEvery(ADD_TO_CART, addToCartSaga)
+
+}
+
+function* watchRemoveFromCartProduct(){
+    yield takeEvery(REMOVE_FROM_CART, removeFromCartSaga)
+
+}
+
+function* watchCheckout(){
+    yield takeEvery(CHECKOUT, checkoutSaga)
+
+}
+
 export default function* rootSaga()
 {
     yield all([
         watchGetProducts(),
-        watchGetProduct()
+        watchGetProduct(),
+        watchAddToCartProduct(),
+        watchRemoveFromCartProduct(),
+        watchGetCart(),
+        watchCheckout()
     ])
 }

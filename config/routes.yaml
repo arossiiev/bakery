@@ -11,3 +11,25 @@ get_product:
   path: /products/{id}
   controller: App\Controller\ProductController::getProduct
   methods: GET
+
+add_to_cart:
+  path: /add_product/{id}
+  controller: App\Controller\OrderController::addProduct
+  methods: POST
+
+remove_from_cart:
+  path: /remove_product/{id}
+  controller: App\Controller\OrderController::removeProduct
+  methods: POST
+
+
+get_cart:
+  path: /cart
+  controller: App\Controller\OrderController::getCart
+  methods: GET
+
+
+checkout:
+  path: /checkout
+  controller: App\Controller\OrderController::checkout
+  methods: POST

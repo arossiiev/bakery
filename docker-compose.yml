@@ -20,6 +20,7 @@ services:
     build:
       context: ./nginx
     volumes:
+      - ~/ca:/ca
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/client.conf:/etc/nginx/conf.d/client.conf
       - ./:/var/www/api.bakery
@@ -29,6 +30,7 @@ services:
       - fpm
     ports:
       - "80:80"
+      - "443:443"
     links:
       - fpm
 

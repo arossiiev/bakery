@@ -2,6 +2,11 @@ import logo from "../../assets/images/logo.svg";
 import "../../assets/css/index.css";
 import {Link} from "react-router-dom";
 import SearchBar from "./SearchBar";
+import Cart from "../misc/Cart";
+import {useDispatch, useSelector} from "react-redux";
+import {selectCart} from "../../selectors";
+import {useEffect} from "react";
+import {getCart} from "../../actions";
 
 
 
@@ -10,13 +15,26 @@ function Header({callback, children}){
     if(!callback){
         callback = () =>{};
     }
+    const dispatch = useDispatch()
+    useEffect(()=>{
+        dispatch(getCart())
+
+
+        },
+        [dispatch]
+    )
+
+
+    let cart = useSelector(selectCart)
+    let orderCount = cart.reduce((prev, {quantity}) => (prev+quantity), 0)
+
 
 
     return (
         <header className="bg-yellow sticky-top">
 
             <div className="container no-text-decoration">
-                <nav className="navbar navbar-expand-sm py-0">
+                <nav className="navbar navbar-expand-lg py-0">
                     <div className="container-fluid">
                         <Link to="/">
                             <div className="d-flex navbar-brand" >
@@ -36,13 +54,20 @@ function Header({callback, children}){
                                     </div>
 
                                 ))}
-                            </div>
-                        </div>
 
+                            </div>
+                            <div className="nav-link" >
+                                <Cart orderCount={orderCount}/>
+                            </div>
+
+                        </div>
                         <div className="collapse navbar-collapse flex-grow-0" id="navbarToggler">
                            <SearchBar callback={callback}/>
                         </div>
+
+
                     </div>
+
                 </nav>
             </div>
 

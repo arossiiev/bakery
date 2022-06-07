@@ -23,3 +23,36 @@
 .bg-grey{
     background: rgb(45, 46, 48);
 }
+
+
+.cart {
+    width: 32px;
+    height: 32px;
+
+
+}
+
+.cart-image {
+    height: 32px;
+    width: 32px;
+    padding-right: 4px;
+}
+
+.cart-image img {
+    height: inherit;
+}
+
+
+.cart-counter-wrapper{
+    position: relative;
+    font-size: 13px;
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: red;
+    text-align: center;
+    bottom: 30px;
+    left: 20px;
+    padding: 0;
+}

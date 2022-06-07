@@ -74,4 +74,10 @@ class OrderLine
 
         return $this;
     }
+
+
+    public function getTotalPrice(){
+        return $this->getProduct()->getPrice() * $this->quantity;
+
+    }
 }
