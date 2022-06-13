@@ -58,8 +58,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $orders;
 
-    public function __construct()
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $salt;
+
+
+    public function __construct(string $firstName,
+                                string $secondName,
+                                string $email,
+                                string $phone,
+                                string $password,
+                                array $roles,
+                                string $salt)
     {
+        $this->firstName = $firstName;
+        $this->secondName = $secondName;
+        $this->email = $email;
+        $this->phone = $phone;
+        $this->password = $password;
+        $this->roles = $roles;
+        $this->salt = $salt;
         $this->orders = new ArrayCollection();
     }
 
@@ -140,7 +159,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getSalt(): ?string
     {
-        return null;
+        return $this->salt;
+    }
+
+    public function setSalt(string $salt)
+    {
+        $this->salt = $salt;
     }
 
     /**

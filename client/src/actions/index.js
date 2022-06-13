@@ -7,9 +7,64 @@ export const REMOVE_FROM_CART="REMOVE_FROM_CART"
 export const SET_CART="SET_CART"
 export const GET_CART="GET_CART"
 export const CHECKOUT="CHECKOUT"
+export const REGISTRATE="REGISTRATE"
+export const LOGIN="LOGIN"
+export const GET_CURRENT_USER="GET_CURRENT_USER"
+export const SET_CURRENT_USER="SET_CURRENT_USER"
+export const GET_USER_ORDERS="GET_USER_ORDERS"
+export const SET_USER_ORDERS="SET_USER_ORDERS"
 
 export const ADD_TOAST="ADD_TOAST";
 export const CLEAR_TOAST="CLEAR_TOAST";
+
+
+export function getUser(){
+    return {
+        type: GET_CURRENT_USER,
+        payload: {}
+    }
+}
+
+export function setUser({firstName, secondName, email}){
+    return {
+        type: SET_CURRENT_USER,
+        payload: {
+            firstName: firstName,
+            secondName: secondName,
+            email: email
+        }
+    }
+}
+
+export function getUserOrders(){
+    return {
+        type: GET_USER_ORDERS,
+        payload: {}
+    }
+}
+
+export function setUserOrders(orders){
+    return {
+        type: SET_USER_ORDERS,
+        payload: {
+            orders: orders
+        }
+    }
+}
+
+
+
+
+export function login(email, password){
+    return {
+        type: LOGIN,
+        payload: {
+            email: email,
+            password: password
+        }
+    }
+}
+
 
 
 export function getProducts(search, type){
@@ -101,10 +156,10 @@ export function checkout(first_name, second_name, phone, mail){
 }
 
 
-export function addToast(toastType, message) {
+export function addToast(toastType, message, to) {
     return {
         type: ADD_TOAST,
-        payload: { type: toastType, message: message }
+        payload: { type: toastType, message: message, to: to}
     }
 }
 
@@ -112,5 +167,19 @@ export function clearToast(){
     return {
         type: CLEAR_TOAST,
         payload: {}
+    }
+}
+
+
+export function registrate(first_name, second_name, phone, mail, password){
+    return{
+        type: REGISTRATE,
+        payload: {
+            first_name: first_name,
+            second_name: second_name,
+            phone: phone,
+            mail: mail,
+            password: password
+        }
     }
 }

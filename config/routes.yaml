@@ -33,3 +33,26 @@ checkout:
   path: /checkout
   controller: App\Controller\OrderController::checkout
   methods: POST
+
+registration:
+  path: user/registration
+  controller: App\Controller\UserController::registration
+  methods: POST
+
+get_current_user:
+  path: user/me
+  controller: App\Controller\UserController::getCurrentUser
+  methods: GET
+
+login:
+  path: /login
+  controller: App\Controller\UserController::login
+  methods: POST
+
+
+get_user_orders:
+  path: user/orders
+  controller: App\Controller\UserController::getUserOrders
+  methods: GET
+
+

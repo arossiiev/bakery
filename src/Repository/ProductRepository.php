@@ -65,6 +65,20 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * @return Product[] Returns an array of Tour objects
+     */
+    public function findByText($value)
+    {
+
+        $qb = $this->createQueryBuilder('t');
+        return $qb->orWhere($qb->expr()->like('t.name', ':val'))
+            ->setParameter(':val', "%$value%")
+            ->orderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     /*
     public function findOneBySomeField($value): ?Product
     {

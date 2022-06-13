@@ -28,9 +28,13 @@ function ProductsPage(){
         return <Loading/>;
     }
 
+    const callback = (search) =>{
+        dispatch(getProducts(search))
+    }
+
 
     return (
-        <Layout>
+        <Layout callback={callback}>
             <div className="row row-cols-md-auto my-3">
                 {products.map(({id, name, imageUrl, price})=>
                     <Link key={id} to={`/products/${id}`} style={{textDecoration:"none"}}>

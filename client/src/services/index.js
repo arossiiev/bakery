@@ -8,6 +8,11 @@ const ADD_TO_CART_URL = "/add_product/{}"
 const REMOVE_FROM_CART_URL = "/remove_product/{}"
 const CART_URL = "/cart"
 const CHECKOUT_URL = "/checkout"
+const REGISTRATION_URL = "user/registration"
+const LOGIN_URL = "/login"
+const CURRENT_USER = "user/me"
+const USER_ORDERS = "/user/orders"
+
 
 
 axios.defaults.baseURL = BASE_URL
@@ -56,10 +61,59 @@ export function removeFromCartProduct({id}){
 
 
 export function checkoutService(first_name, second_name, phone, mail){
+    const token = localStorage.getItem("authToken")
     return axios.post(CHECKOUT_URL,{
         first_name: first_name,
         second_name: second_name,
         mail: mail,
         phone: phone
-    }, {baseURL: "https://api.bakery"});
+    }, {
+        baseURL: "https://api.bakery",
+        headers: {
+            "X-AUTH-TOKEN": token
+
+        }
+    });
 }
+
+
+export function registrationService(first_name, second_name, phone, mail, password){
+    return axios.post(REGISTRATION_URL,{
+        first_name: first_name,
+        second_name: second_name,
+        mail: mail,
+        phone: phone,
+        password: password
+    });
+}
+
+
+export function loginService(mail, password){
+    return axios.post(LOGIN_URL,{
+        email: mail,
+        password: password
+    });
+}
+
+
+export function fetchUserService(){
+    const token = localStorage.getItem("authToken")
+    return axios.get(CURRENT_USER,{
+        headers: {
+            "X-AUTH-TOKEN": token
+        }
+    });
+}
+
+
+export function fetchUserOrdersService(){
+    const token = localStorage.getItem("authToken")
+    return axios.get(USER_ORDERS,{
+        headers: {
+            "X-AUTH-TOKEN": token
+        }
+    });
+}
+
+
+

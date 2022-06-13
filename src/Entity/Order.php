@@ -3,20 +3,25 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
  * @ORM\Table(name="`order`")
+ * @HasLifecycleCallbacks
  */
 class Order
 {
     const ORDER_IS_PENDING = 0;
     const ORDER_IN_DELIVERY = 1;
     const ORDER_IS_READY = 2;
-
+    const statuses = ["Замовлення в обробці", "Замовлення в службі доставки", "Замовлення виконано!"];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -48,6 +53,37 @@ class Order
      * @ORM\Column(type="integer")
      */
     private $status;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function updatedTimestamps(LifecycleEventArgs $eventArgs): void
+    {
+        $dateTimeNow = new DateTime('now');
+        $dateTimeNow->format('Y-m-d H:i:s');
+
+
+        if ($this->getCreatedAt() === null) {
+            $this->setCreatedAt($dateTimeNow);
+        }
+    }
+
+    public function getCreatedAt() :?DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 
     public function __construct()
     {
@@ -125,9 +161,9 @@ class Order
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?string
     {
-        return $this->status;
+        return self::statuses[$this->status];
     }
 
     public function setStatus(int $status): self

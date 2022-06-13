@@ -1,4 +1,12 @@
-import {ADD_TOAST, CLEAR_TOAST, SET_CART, SET_PRODUCT, SET_PRODUCTS} from "../actions";
+import {
+    ADD_TOAST,
+    CLEAR_TOAST,
+    SET_CART,
+    SET_CURRENT_USER,
+    SET_PRODUCT,
+    SET_PRODUCTS,
+    SET_USER_ORDERS
+} from "../actions";
 import {combineReducers} from "redux";
 
 
@@ -54,10 +62,31 @@ function toastsReducer(state=null, action) {
     }
 }
 
+function userReducer(state={user:null, orders:[]}, action) {
+    let tmp;
+    switch (action.type)  {
+        case SET_CURRENT_USER:
+            tmp = {...state};
+            tmp.user = action.payload
+            return tmp;
+
+        case SET_USER_ORDERS:
+            tmp = {...state};
+            tmp.orders = action.payload.orders
+            return tmp;
+
+
+        default:
+            return state;
+    }
+}
+
+
 const reducer = combineReducers({
         products: productReducer,
         cart: cartReducer,
-        toast: toastsReducer
+        toast: toastsReducer,
+        user: userReducer
     }
 
 )

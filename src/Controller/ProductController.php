@@ -23,7 +23,12 @@ class ProductController extends AbstractController
         Packages $package
     ): JsonResponse
     {
-        if($request->query->has("type")){
+        if($request->query->has("search")){
+            $search = $request->query->get("search");
+            $products = $productRepository->findByText($search);
+
+        }
+        else if($request->query->has("type")){
             $type = $request->query->get("type");
 
 

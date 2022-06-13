@@ -23,3 +23,14 @@ export function selectToasts(state)
 {
     return state.toast;
 }
+
+
+export function selectUser(state)
+{
+    return state.user.user;
+}
+
+export function selectUserOrders(state)
+{
+    return state.user.orders;
+}

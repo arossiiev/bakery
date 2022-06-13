@@ -1,3 +1,11 @@
+html,
+body{
+    height: 100%;
+}
+#root{
+    height: 100%;
+}
+
 .no-text-decoration,
 .no-text-decoration a,
 .no-text-decoration a:link,
@@ -18,6 +26,10 @@
 
 .bg-yellow{
     background: yellow;
+}
+
+.bg-soft-yellow{
+    background: rgb(242, 208, 114);
 }
 
 .bg-grey{

@@ -23,7 +23,7 @@ function Toast()
             if (toastMessage.type === 'success') {
                 toast.success(toastMessage.message, {onClose: ()=>{
                         dispatch(clearToast());
-                        navigate("/");
+                        navigate(toastMessage.to);
                     }})
             }
             else if (toastMessage.type === 'error') {

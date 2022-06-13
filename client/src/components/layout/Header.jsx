@@ -4,9 +4,9 @@ import {Link} from "react-router-dom";
 import SearchBar from "./SearchBar";
 import Cart from "../misc/Cart";
 import {useDispatch, useSelector} from "react-redux";
-import {selectCart} from "../../selectors";
+import {selectCart, selectUser} from "../../selectors";
 import {useEffect} from "react";
-import {getCart} from "../../actions";
+import {getCart, getUser} from "../../actions";
 
 
 
@@ -16,13 +16,41 @@ function Header({callback, children}){
         callback = () =>{};
     }
     const dispatch = useDispatch()
+
     useEffect(()=>{
-        dispatch(getCart())
-
-
-        },
+        dispatch(getCart());
+        if(localStorage.getItem("authKey") !== undefined){
+            dispatch(getUser());
+        }},
         [dispatch]
     )
+
+    const user = useSelector(selectUser);
+
+    let authComponent = (<>
+            <div className="d-flex flex-row">
+            <Link exact to="/registration">
+                <div className="mx-2">Регістрація</div>
+            </Link>
+            |
+            <Link exact to="/login">
+                <div className="mx-2">Вхід</div>
+            </Link>
+        </div>
+
+        </>
+    );
+
+    if(user !== null){
+
+        authComponent =(<>
+                <Link exact to="/user">
+                    <div className="mx-2">{user.firstName} {user.secondName}</div>
+                </Link>
+            </>
+        )
+
+    }
 
 
     let cart = useSelector(selectCart)
@@ -31,7 +59,7 @@ function Header({callback, children}){
 
 
     return (
-        <header className="bg-yellow sticky-top">
+        <header className="bg-soft-yellow sticky-top">
 
             <div className="container no-text-decoration">
                 <nav className="navbar navbar-expand-lg py-0">
@@ -60,6 +88,9 @@ function Header({callback, children}){
                                 <Cart orderCount={orderCount}/>
                             </div>
 
+                        </div>
+                        <div className="collapse navbar-collapse flex-grow-0" id="navbarToggler">
+                            {authComponent}
                         </div>
                         <div className="collapse navbar-collapse flex-grow-0" id="navbarToggler">
                            <SearchBar callback={callback}/>

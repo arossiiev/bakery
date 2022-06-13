@@ -9,6 +9,7 @@ use App\Entity\UnauthorizedUser;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UnauthorizedUserRepository;
+use App\Repository\UserRepository;
 use App\Service\CartService;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,6 +61,7 @@ class OrderController extends AbstractController
         CartService $cartService,
         ProductRepository $productRepository,
         UnauthorizedUserRepository $unauthorizedUserRepository,
+        UserRepository $userRepository,
         EntityManagerInterface $entityManager
     ){
         try {
@@ -71,63 +73,61 @@ class OrderController extends AbstractController
                 JsonResponse::HTTP_BAD_REQUEST
             );
         }
+        $user = $this->getUser();
+        $order = new Order();
+        $order->setAuthorizedUser($user);
 
-        try {
-            $firstName = $data['first_name'];
-            $secondName = $data['second_name'];
-            $mail = $data['mail'];
-            $phoneNumber = $data['phone'];
-        } catch (ErrorException $ex) {
-            return new JsonResponse(
-                ['message' => 'Request body not provide some of this parameters: 
-                first_name, second_name, mail, phone'],
-                JsonResponse::HTTP_BAD_REQUEST
-            );
-        }
-        try{
-            $uusers = $unauthorizedUserRepository->findBy(["email" =>$mail]);
-            if(count($uusers) == 0){
-                $uuser = new UnauthorizedUser();
-                $uuser->setFirstName($firstName);
-                $uuser->setEmail($mail);
-                $uuser->setPhone($phoneNumber);
-                $uuser->setSecondName($secondName);
-                $entityManager->persist($uuser);
-
-            }else{
-                $uuser = $uusers[0];
+        if(!$order->getAuthorizedUser()) {
+            try {
+                $firstName = $data['first_name'];
+                $secondName = $data['second_name'];
+                $mail = $data['mail'];
+                $phoneNumber = $data['phone'];
+            } catch (ErrorException $ex) {
+                return new JsonResponse(
+                    ['message' => 'Request body not provide some of this parameters: 
+                    first_name, second_name, mail, phone'],
+                    JsonResponse::HTTP_BAD_REQUEST
+                );
             }
-
-
-            $cart = $cartService->getOrderLines();
-            $order = new Order();
-            $order->setUnauthorizedUser($uuser);
-            $order->setAuthorizedUser(null);
-
-            $total = 0;
-            foreach ($cart as $item => $quantity){
-                $product = $productRepository->find($item);
-                $orderLine = new OrderLine();
-                $orderLine->setProduct($product);
-                $orderLine->setClientOrder($order);
-                $orderLine->setQuantity($quantity);
-                $entityManager->persist($orderLine);
-                $total += $orderLine->getTotalPrice();
-            }
-            $order->setTotal($total);
-            $order->setStatus(Order::ORDER_IS_PENDING);
-            $entityManager->persist($order);
-
-            $entityManager->flush();
-            $cartService->clearCart();
-        }catch (ErrorException $ex){
+            try {
+                $uusers = $unauthorizedUserRepository->findBy(["email" => $mail]);
+                if (count($uusers) == 0) {
+                    $uuser = new UnauthorizedUser();
+                    $uuser->setFirstName($firstName);
+                    $uuser->setEmail($mail);
+                    $uuser->setPhone($phoneNumber);
+                    $uuser->setSecondName($secondName);
+                    $entityManager->persist($uuser);
+                } else {
+                    $uuser = $uusers[0];
+                }
+            }catch (ErrorException $ex){
             return new JsonResponse(
                 ['message' => 'Error while creating order'],
                 JsonResponse::HTTP_BAD_REQUEST
-            );
+            );}
+            $order->setUnauthorizedUser($uuser);
 
         }
 
+        $cart = $cartService->getOrderLines();
+        $total = 0;
+        foreach ($cart as $item => $quantity){
+            $product = $productRepository->find($item);
+            $orderLine = new OrderLine();
+            $orderLine->setProduct($product);
+            $orderLine->setClientOrder($order);
+            $orderLine->setQuantity($quantity);
+            $entityManager->persist($orderLine);
+            $total += $orderLine->getTotalPrice();
+        }
+        $order->setTotal($total);
+        $order->setStatus(Order::ORDER_IS_PENDING);
+        $entityManager->persist($order);
+
+        $entityManager->flush();
+        $cartService->clearCart();
 
 
         return new JsonResponse([],JsonResponse::HTTP_CREATED);
